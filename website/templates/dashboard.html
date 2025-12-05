@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+    .dashboard-container {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        padding-top: 30px;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .welcome-text {
+        font-size: 20px;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .btn-custom {
+        display: inline-block;
+        background: #000;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        margin: 10px;
+        transition: 0.2s ease-in-out;
+        font-weight: bold;
+    }
+
+    .btn-custom:hover {
+        opacity: 0.8;
+    }
+
+    hr {
+        width: 60%;
+        margin: 30px auto;
+    }
+
+    .stats {
+        font-size: 18px;
+        line-height: 1.6;
+    }
+</style>
+
+<div class="dashboard-container">
+
+    <h1>Dashboard</h1>
+
+    {% if current_user %}
+        <p class="welcome-text">Welcome, {{ current_user.first_name }}!</p>
+    {% endif %}
+
+    <!-- Buttons -->
+    <a href="{{ url_for('views.my_tastings') }}" class="btn-custom">View My Tastings</a>
+    <a href="{{ url_for('views.submit_tasting') }}" class="btn-custom">Submit New Tasting</a>
+
+    <hr>
+
+    <h2>Quick Stats</h2>
+<div class="stats">
+    <p>Total Tastings: {{ total_tastings or 0 }}</p>
+    <p>Total Bottles Sold (All Products): {{ total_bottles_sold or 0 }}</p>
+    <p>Total Tastings Poured: {{ total_tastings_poured or 0 }}</p>
+    <p><strong>Total Conversion Rate: {{ total_conversion | round(2) }}%</strong></p>
+</div>
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>Your Submissions</h2>
+
+<ul>
+    {% for s in submissions %}
+        <li>{{ s.text }}</li>
+    {% endfor %}
+</ul>
+
+<a href="/submit">Add a new submission</a>
+{% endblock %}

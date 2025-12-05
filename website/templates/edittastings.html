@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Edit Tasting{% endblock %}
+
+{% block content %}
+<h1 style="text-align:center; margin-bottom:20px;">Edit Tasting</h1>
+
+<form method="POST">
+    <!-- Top info -->
+    <div style="text-align:center; margin-bottom:25px;">
+        <label for="date">Date:</label>
+        <input type="datetime-local" name="date" 
+               value="{{ tasting.date.strftime('%Y-%m-%dT') }}{{ tasting.time.strftime('%H:%M') }}" required>
+
+        <label for="store_name">Store:</label>
+        <select name="store_name" required>
+            {% for store in ["Liquor Barn Beaumont", "Liquor Barn Hamburg", "Total Wine & More Lexington Green"] %}
+                <option value="{{ store }}" {% if tasting.store_name == store %}selected{% endif %}>{{ store }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="tastings_poured">Tastings Poured:</label>
+        <input type="number" name="tastings_poured" value="{{ tasting.tastings_poured or 0 }}" required>
+    </div>
+
+    <!-- Products in two columns -->
+    <div class="products-container">
+        {% set half = (products|length // 2) + (products|length % 2) %}
+        <div class="products-column">
+            {% for product in products[:half] %}
+            {% set field = product.replace(' ', '_').lower() %}
+            {% set values = tasting.products.get(product, {'to_sell':0, 'sold':0, 'left':0}) %}
+            <fieldset>
+                <legend>{{ product }}</legend>
+                <label>Bottles on Hand to Sell:</label>
+                <input type="number" name="{{ field }}_to_sell" value="{{ values.to_sell }}">
+                <label>Bottles Sold:</label>
+                <input type="number" name="{{ field }}_sold" value="{{ values.sold }}">
+            </fieldset>
+            {% endfor %}
+        </div>
+
+        <div class="products-column">
+            {% for product in products[half:] %}
+            {% set field = product.replace(' ', '_').lower() %}
+            {% set values = tasting.products.get(product, {'to_sell':0, 'sold':0, 'left':0}) %}
+            <fieldset>
+                <legend>{{ product }}</legend>
+                <label>Bottles on Hand to Sell:</label>
+                <input type="number" name="{{ field }}_to_sell" value="{{ values.to_sell }}">
+                <label>Bottles Sold:</label>
+                <input type="number" name="{{ field }}_sold" value="{{ values.sold }}">
+            </fieldset>
+            {% endfor %}
+
+            <!-- Other product -->
+            <fieldset>
+                <legend>Other Product</legend>
+                <label>Product Name:</label>
+                <input type="text" name="other_product_name" value="{{ tasting.other_product_name or '' }}" placeholder="Enter product name">
+                <label>Bottles on Hand to Sell:</label>
+                <input type="number" name="other_to_sell" value="{{ tasting.other_to_sell or 0 }}">
+                <label>Bottles Sold:</label>
+                <input type="number" name="other_sold" value="{{ tasting.other_sold or 0 }}">
+            </fieldset>
+        </div>
+    </div>
+
+    <button type="submit">Update Tasting</button>
+</form>
+
+<div style="text-align:center; margin-top:15px;">
+    <a href="{{ url_for('views.my_tastings') }}">Back to My Tastings</a>
+</div>
+
+<style>
+form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input[type="number"], input[type="text"], input[type="datetime-local"], select {
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.products-container {
+    display: flex;
+    gap: 20px;
+}
+
+.products-column {
+    flex: 1;
+}
+
+fieldset {
+    border: 1px solid #ddd;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #333;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}
